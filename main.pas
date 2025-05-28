@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  DD_TEXTURE: A tool for creating textures from real world photos.
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2024 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -15,7 +15,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, inc., 59 Temple Place - Suite 330, Boston, MA
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 //  02111-1307, USA.
 //
 // DESCRIPTION:
@@ -106,6 +106,8 @@ type
     Open2: TMenuItem;
     Copy3: TMenuItem;
     Paste2: TMenuItem;
+    WRadioGroup: TRadioGroup;
+    HRadioGroup: TRadioGroup;
     procedure FormCreate(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
     procedure OpenGLPanelResize(Sender: TObject);
@@ -127,6 +129,8 @@ type
       Y: Integer);
     procedure GridTrackBarChange(Sender: TObject);
     procedure ResetSpeedButtonClick(Sender: TObject);
+    procedure HRadioGroupClick(Sender: TObject);
+    procedure WRadioGroupClick(Sender: TObject);
   private
     { Private declarations }
     glneedrecalc: boolean;
@@ -756,6 +760,18 @@ end;
 procedure TForm1.ResetSpeedButtonClick(Sender: TObject);
 begin
   ResetMarks;
+end;
+
+procedure TForm1.HRadioGroupClick(Sender: TObject);
+begin
+  OpenGLPanel.Height := 512 * (1 + HRadioGroup.ItemIndex);
+  DoRenderGL;
+end;
+
+procedure TForm1.WRadioGroupClick(Sender: TObject);
+begin
+  OpenGLPanel.Width := 512 * (1 + WRadioGroup.ItemIndex);
+  DoRenderGL;
 end;
 
 end.

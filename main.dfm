@@ -831,6 +831,38 @@ object Form1: TForm1
       TabOrder = 0
       OnChange = GridTrackBarChange
     end
+    object WRadioGroup: TRadioGroup
+      Left = 728
+      Top = 8
+      Width = 137
+      Height = 57
+      Caption = ' Width '
+      Columns = 2
+      ItemIndex = 0
+      Items.Strings = (
+        '512'
+        '1024'
+        '1536'
+        '2048')
+      TabOrder = 1
+      OnClick = WRadioGroupClick
+    end
+    object HRadioGroup: TRadioGroup
+      Left = 880
+      Top = 7
+      Width = 137
+      Height = 57
+      Caption = ' Height '
+      Columns = 2
+      ItemIndex = 0
+      Items.Strings = (
+        '512'
+        '1024'
+        '1536'
+        '2048')
+      TabOrder = 2
+      OnClick = HRadioGroupClick
+    end
   end
   object StatusBar1: TStatusBar
     Left = 0
