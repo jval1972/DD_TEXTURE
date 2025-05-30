@@ -102,7 +102,7 @@ type
   TLongWordArray = array[0..$FFFF] of LongWord;
 
 const
-  TEXTURESIZE = 2048;
+  TEXTURESIZE = 4096;
 
 procedure gld_CreateTexture(const b: TBitmap);
 var
