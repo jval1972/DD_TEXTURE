@@ -425,7 +425,7 @@ procedure TForm1.About1Click(Sender: TObject);
 begin
   MessageBox(
     Handle,
-    PChar(Format('%s'#13#10'Version %s'#13#10#13#10'A tool for creating textures from real world photos.'#13#10'© 2017-2020, jvalavanis@gmail.com', [rsTitle, I_VersionBuilt])),
+    PChar(Format('%s'#13#10'Version %s'#13#10#13#10'A tool for creating textures from real world photos.'#13#10'© 2017-2025, jvalavanis@gmail.com', [rsTitle, I_VersionBuilt])),
     PChar(rsTitle),
     MB_OK or MB_ICONINFORMATION or MB_APPLMODAL);
 end;
