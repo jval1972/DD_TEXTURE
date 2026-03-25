@@ -346,11 +346,16 @@ procedure TForm1.PasteButtonClick(Sender: TObject);
 begin
   if Clipboard.HasFormat(CF_BITMAP) then
   begin
-    buffer.LoadFromClipboardFormat(CF_BITMAP, ClipBoard.GetAsHandle(cf_Bitmap), 0);
-    CreateGLTexture;
-    ResetMarks;
-    InvalidatePaintBox;
-    glneedrecalc := True;
+    Screen.Cursor := crHourGlass;
+    try
+      buffer.LoadFromClipboardFormat(CF_BITMAP, ClipBoard.GetAsHandle(cf_Bitmap), 0);
+      CreateGLTexture;
+      ResetMarks;
+      InvalidatePaintBox;
+      glneedrecalc := True;
+    finally
+      Screen.Cursor := crDefault;
+    end;
   end;
 end;
 
@@ -365,11 +370,16 @@ var
 begin
   b := TBitmap.Create;
   try
-    DoRenderGL; // JVAL: For some unknown reason this must be called before glReadPixels
-    Get3dPreviewBitmap(b);
-    Clipboard.Assign(b);
+    b := TBitmap.Create;
+    try
+      DoRenderGL; // JVAL: For some unknown reason this must be called before glReadPixels
+      Get3dPreviewBitmap(b);
+      Clipboard.Assign(b);
+    finally
+      b.Free;
+    end;
   finally
-    b.Free;
+    Screen.Cursor := crDefault;
   end;
 end;
 
@@ -442,7 +452,12 @@ end;
 
 procedure TForm1.Copy1Click(Sender: TObject);
 begin
-  Clipboard.Assign(buffer);
+  Screen.Cursor := crHourGlass;
+  try
+    Clipboard.Assign(buffer);
+  finally
+    Screen.Cursor := crDefault;
+  end;
 end;
 
 procedure TForm1.OpenButton1Click(Sender: TObject);
