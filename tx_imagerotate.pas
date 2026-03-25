@@ -675,17 +675,23 @@ begin
   Result := RGB(r, g, b);
 end;
 
+type
+  TLongWordBuffer = array[0..$FFFF] of LongWord;
+  PLongWordBuffer = ^TLongWordBuffer;
+
 procedure RestoreBitmapDeformation(const bm: TBitmap);
 const
   BUF_SIZE_7 = 10000;
 var
   A, B: array[0..BUF_SIZE_7 - 1] of Integer;
   L: array[0..BUF_SIZE_7 - 1] of LongWord;
+  c_gray: LongWord;
   i: integer;
   w, h: integer;
   x, y: integer;
   margin: integer;
   C: TCanvas;
+  buf: PLongWordBuffer;
   astart, bstop: Integer;
   px1, px2: Integer;
   w1, w2: double;
@@ -704,17 +710,18 @@ begin
   h := bm.Height;
 
   margin := w div 6;
+  c_gray := RGB(128, 128, 128);
 
   for x := 0 to h - 1 do
   begin
     for i := 0 to margin - 1 do
-      if pixelless(RGB(128, 128, 128), C.Pixels[i, x]) and pixelless(RGB(128, 128, 128), C.Pixels[i + 1, x]) then
+      if pixelless(c_gray, C.Pixels[i, x]) and pixelless(c_gray, C.Pixels[i + 1, x]) then
       begin
         A[x] := i;
         Break;
       end;
     for i := w - 1 downto w - margin do
-      if pixelless(RGB(128, 128, 128), C.Pixels[i, x]) and pixelless(RGB(128, 128, 128), C.Pixels[i - 1, x]) then
+      if pixelless(c_gray, C.Pixels[i, x]) and pixelless(c_gray, C.Pixels[i - 1, x]) then
       begin
         B[x] := i;
         Break;
@@ -740,23 +747,25 @@ begin
     for x := 0 to h - 1 do
       if (A[x] >= 0) and (B[x] >= 0) and (B[x] > A[x]) and (B[x] - A[x] > w div 2) then
       begin
+        buf := bm.ScanLine[x];
         for y := astart to bstop do
         begin
           // L[y] := C.Pixels[Round(A[x] + (B[x] - A[x]) * (y - astart) / (bstop - astart)), x]
           dbl := A[x] + (B[x] - A[x]) * (y - astart) / (bstop - astart);
           px1 := Trunc(dbl);
           px2 := px1 + 1;
+          if px2 >= w then
+            px2 := w - 1;
           w2 := dbl - px1;
           w1 := 1.0 - w2;
-          L[y] := ColorWeights(C.Pixels[px1, x], C.Pixels[px2, x], w1, w2);
+          L[y] := ColorWeights(buf[px1], buf[px2], w1, w2);
         end;
         for y := 0 to w - 1 do
-          C.Pixels[y, x] := L[y];
+          buf[y] := L[y];
       end;
 
   end;
 end;
-
 
 end.
 
