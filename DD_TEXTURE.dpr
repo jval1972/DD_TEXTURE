@@ -14,7 +14,8 @@ uses
   zBitmap in 'zBitmap.pas',
   zlibpas in 'zlibpas.pas',
   tx_utils in 'tx_utils.pas',
-  tx_glutils in 'tx_glutils.pas';
+  tx_glutils in 'tx_glutils.pas',
+  tx_imagerotate in 'tx_imagerotate.pas';
 
 {$R *.res}
 

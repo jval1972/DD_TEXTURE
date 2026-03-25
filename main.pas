@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  DD_TEXTURE: A tool for creating textures from real world photos.
-//  Copyright (C) 2017-2025 by Jim Valavanis
+//  Copyright (C) 2017-2026 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -108,6 +108,8 @@ type
     Paste2: TMenuItem;
     WRadioGroup: TRadioGroup;
     HRadioGroup: TRadioGroup;
+    RotateLeftSpeedButton: TSpeedButton;
+    RotateRightSpeedButton: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
     procedure OpenGLPanelResize(Sender: TObject);
@@ -131,6 +133,8 @@ type
     procedure ResetSpeedButtonClick(Sender: TObject);
     procedure HRadioGroupClick(Sender: TObject);
     procedure WRadioGroupClick(Sender: TObject);
+    procedure RotateLeftSpeedButtonClick(Sender: TObject);
+    procedure RotateRightSpeedButtonClick(Sender: TObject);
   private
     { Private declarations }
     glneedrecalc: boolean;
@@ -172,7 +176,8 @@ uses
   dglOpenGL,
   tx_utils,
   tx_gl,
-  tx_glutils;
+  tx_glutils,
+  tx_imagerotate;
 
 procedure TForm1.FormCreate(Sender: TObject);
 var
@@ -425,7 +430,7 @@ procedure TForm1.About1Click(Sender: TObject);
 begin
   MessageBox(
     Handle,
-    PChar(Format('%s'#13#10'Version %s'#13#10#13#10'A tool for creating textures from real world photos.'#13#10'© 2017-2025, jvalavanis@gmail.com', [rsTitle, I_VersionBuilt])),
+    PChar(Format('%s'#13#10'Version %s'#13#10#13#10'A tool for creating textures from real world photos.'#13#10'© 2017-2026, jvalavanis@gmail.com', [rsTitle, I_VersionBuilt])),
     PChar(rsTitle),
     MB_OK or MB_ICONINFORMATION or MB_APPLMODAL);
 end;
@@ -772,6 +777,34 @@ procedure TForm1.WRadioGroupClick(Sender: TObject);
 begin
   OpenGLPanel.Width := 512 * (1 + WRadioGroup.ItemIndex);
   DoRenderGL;
+end;
+
+procedure TForm1.RotateLeftSpeedButtonClick(Sender: TObject);
+begin
+  Screen.Cursor := crHourGlass;
+  try
+    RotateBitmap90DegreesClockwise(buffer);
+    CreateGLTexture;
+    ResetMarks;
+    InvalidatePaintBox;
+    glneedrecalc := True;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+end;
+
+procedure TForm1.RotateRightSpeedButtonClick(Sender: TObject);
+begin
+  Screen.Cursor := crHourGlass;
+  try
+    RotateBitmap90DegreesCounterClockwise(buffer);
+    CreateGLTexture;
+    ResetMarks;
+    InvalidatePaintBox;
+    glneedrecalc := True;
+  finally
+    Screen.Cursor := crDefault;
+  end;
 end;
 
 end.

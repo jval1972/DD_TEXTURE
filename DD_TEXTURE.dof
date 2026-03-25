@@ -115,7 +115,7 @@ AutoIncBuild=1
 MajorVer=1
 MinorVer=1
 Release=5
-Build=9
+Build=10
 Debug=0
 PreRelease=0
 Special=0
@@ -126,7 +126,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=Jim Valavanis
 FileDescription=A tool for creating textures from real world photos
-FileVersion=1.1.5.9
+FileVersion=1.1.5.10
 InternalName=DD_TEXTURE
 LegalCopyright=© 2017-2026, jvalavanis@gmail.com
 LegalTrademarks=
