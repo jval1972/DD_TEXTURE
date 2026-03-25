@@ -59,6 +59,8 @@ function RotateJPEGFile180Degrees(const fname: string): boolean;
 
 procedure StretchBitmap(const srcBmp, dstBmp: TBitmap);
 
+procedure RestoreBitmapDeformation(const bm: TBitmap);
+
 implementation
 
 uses
@@ -629,6 +631,132 @@ begin
     inc(y, ydif);
   end;
 end;
+
+function pixelless(const test, x: LongWord): boolean;
+var
+  r1, r2, g1, g2, b1, b2: byte;
+begin
+  r1 := GetRValue(test);
+  g1 := GetGValue(test);
+  b1 := GetBValue(test);
+  r2 := GetRValue(x);
+  g2 := GetGValue(x);
+  b2 := GetBValue(x);
+  Result := (r2 <  r1) and (g2 < g1) and (b2 < b1);
+end;
+
+function ColorWeights(const c1, c2: LongWord; const w1, w2: Double): LongWord;
+var
+  r1, g1, b1: Integer;
+  r2, g2, b2: Integer;
+  r, g, b: Integer;
+begin
+  r1 := GetRValue(c1);
+  g1 := GetGValue(c1);
+  b1 := GetBValue(c1);
+  r2 := GetRValue(c2);
+  g2 := GetGValue(c2);
+  b2 := GetBValue(c2);
+  r := Round(w1 * r1 + w2 * r2);
+  if r < 0 then
+    r := 0
+  else if r > 255 then
+    r := 255;
+  g := Round(w1 * g1 + w2 * g2);
+  if g < 0 then
+    g := 0
+  else if g > 255 then
+    g := 255;
+  b := Round(w1 * b1 + w2 * b2);
+  if b < 0 then
+    b:= 0
+  else if b > 255 then
+    b := 255;
+  Result := RGB(r, g, b);
+end;
+
+procedure RestoreBitmapDeformation(const bm: TBitmap);
+const
+  BUF_SIZE_7 = 10000;
+var
+  A, B: array[0..BUF_SIZE_7 - 1] of Integer;
+  L: array[0..BUF_SIZE_7 - 1] of LongWord;
+  i: integer;
+  w, h: integer;
+  x, y: integer;
+  margin: integer;
+  C: TCanvas;
+  astart, bstop: Integer;
+  px1, px2: Integer;
+  w1, w2: double;
+  dbl: double;
+begin
+  for i := 0 to BUF_SIZE_7 - 1 do
+  begin
+    A[i] := -1;
+    B[i] := -1;
+  end;
+
+  bm.PixelFormat := pf32bit;
+  C := bm.Canvas;
+
+  w := bm.Width;
+  h := bm.Height;
+
+  margin := w div 6;
+
+  for x := 0 to h - 1 do
+  begin
+    for i := 0 to margin - 1 do
+      if pixelless(RGB(128, 128, 128), C.Pixels[i, x]) and pixelless(RGB(128, 128, 128), C.Pixels[i + 1, x]) then
+      begin
+        A[x] := i;
+        Break;
+      end;
+    for i := w - 1 downto w - margin do
+      if pixelless(RGB(128, 128, 128), C.Pixels[i, x]) and pixelless(RGB(128, 128, 128), C.Pixels[i - 1, x]) then
+      begin
+        B[x] := i;
+        Break;
+      end;
+
+  end;
+
+  astart := w;
+  bstop := -1;
+  for i := 0 to h - 1 do
+    if (A[i] >= 0) and (B[i] >= 0) and (B[i] > A[i]) and (B[i] - A[i] > w div 2) then
+    begin
+      if A[i] < astart then
+        astart := A[i];
+      if B[i] > bstop then
+        bstop := B[i];
+    end;
+
+  if (astart < bstop) and (bstop - astart > w div 2) then
+  begin
+    for i := 0 to w - 1 do
+      L[i] := RGB(255, 255, 255);
+    for x := 0 to h - 1 do
+      if (A[x] >= 0) and (B[x] >= 0) and (B[x] > A[x]) and (B[x] - A[x] > w div 2) then
+      begin
+        for y := astart to bstop do
+        begin
+          // L[y] := C.Pixels[Round(A[x] + (B[x] - A[x]) * (y - astart) / (bstop - astart)), x]
+          dbl := A[x] + (B[x] - A[x]) * (y - astart) / (bstop - astart);
+          px1 := Trunc(dbl);
+          px2 := px1 + 1;
+          w2 := dbl - px1;
+          w1 := 1.0 - w2;
+          L[y] := ColorWeights(C.Pixels[px1, x], C.Pixels[px2, x], w1, w2);
+        end;
+        for y := 0 to w - 1 do
+          C.Pixels[y, x] := L[y];
+      end;
+
+  end;
+end;
+
 
 end.
 
