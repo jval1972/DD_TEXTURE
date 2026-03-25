@@ -368,7 +368,7 @@ procedure TForm1.Copy3dButtonClick(Sender: TObject);
 var
   b: TBitmap;
 begin
-  b := TBitmap.Create;
+  Screen.Cursor := crHourGlass;
   try
     b := TBitmap.Create;
     try
