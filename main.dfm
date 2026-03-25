@@ -1062,8 +1062,8 @@ object Form1: TForm1
       Items.Strings = (
         '512'
         '1024'
-        '1536'
-        '2048')
+        '2048'
+        '4096')
       TabOrder = 1
       OnClick = WRadioGroupClick
     end
@@ -1078,8 +1078,8 @@ object Form1: TForm1
       Items.Strings = (
         '512'
         '1024'
-        '1536'
-        '2048')
+        '2048'
+        '4096')
       TabOrder = 2
       OnClick = HRadioGroupClick
     end

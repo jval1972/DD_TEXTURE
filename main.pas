@@ -767,15 +767,31 @@ begin
   ResetMarks;
 end;
 
+const
+  RWIDTHS: array[0..3] of Integer = (
+     512,
+    1024,
+    2048,
+    4096
+  );
+
 procedure TForm1.HRadioGroupClick(Sender: TObject);
 begin
-  OpenGLPanel.Height := 512 * (1 + HRadioGroup.ItemIndex);
+  if HRadioGroup.ItemIndex < 0 then
+    HRadioGroup.ItemIndex := 0;
+  if HRadioGroup.ItemIndex > 3 then
+    ShowMessage('Internal Error - Increase RWIDTHS');
+  OpenGLPanel.Height := RWIDTHS[HRadioGroup.ItemIndex];
   DoRenderGL;
 end;
 
 procedure TForm1.WRadioGroupClick(Sender: TObject);
 begin
-  OpenGLPanel.Width := 512 * (1 + WRadioGroup.ItemIndex);
+  if WRadioGroup.ItemIndex < 0 then
+    WRadioGroup.ItemIndex := 0;
+  if WRadioGroup.ItemIndex > 3 then
+    ShowMessage('Internal Error - Increase RWIDTHS');
+  OpenGLPanel.Width := RWIDTHS[WRadioGroup.ItemIndex];
   DoRenderGL;
 end;
 
