@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 //  DD_TEXTURE: A tool for creating textures from real world photos.
-//  Copyright (C) 2017-2021 by Jim Valavanis
+//  Copyright (C) 2017-2026 by Jim Valavanis
 //
 //  This program is free software; you can redistribute it and/or
 //  modify it under the terms of the GNU General Public License
@@ -15,7 +15,7 @@
 //
 //  You should have received a copy of the GNU General Public License
 //  along with this program; if not, write to the Free Software
-//  Foundation, inc., 59 Temple Place - Suite 330, Boston, MA
+//  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
 //  02111-1307, USA.
 //
 // DESCRIPTION:
@@ -42,11 +42,12 @@ uses
 
 function GetIntInRange(const x: Integer; const amin, amax: Integer): Integer;
 begin
-  Result := x;
   if Result < amin then
     Result := amin
   else if Result > amax then
-    Result := amax;
+    Result := amax
+  else
+    Result := x;
 end;
 
 function I_VersionBuilt(fname: string = ''): string;
