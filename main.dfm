@@ -1104,10 +1104,10 @@ object Form1: TForm1
     Color = 16579836
     TabOrder = 2
     object ToolPanel: TPanel
-      Left = 19
-      Top = 16
-      Width = 34
-      Height = 145
+      Left = 2
+      Top = 2
+      Width = 63
+      Height = 111
       Caption = ' '
       TabOrder = 0
       object SpeedButton1: TSpeedButton
@@ -1376,8 +1376,8 @@ object Form1: TForm1
           FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
       end
       object ResetSpeedButton: TSpeedButton
-        Left = 4
-        Top = 112
+        Left = 36
+        Top = 4
         Width = 25
         Height = 25
         Hint = 'Reset marks'

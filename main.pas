@@ -189,10 +189,10 @@ begin
   solidpenstyle := True;
   mousedown := False;
   gridsize := 9;
-  GridTrackBar.Position := gridsize;
-  GridLabel.Caption := Format('Grid size = %d', [gridsize - 1]);
   GridTrackBar.Min := 2;
   GridTrackBar.Max := MAXGRID - 1;
+  GridTrackBar.Position := gridsize;
+  GridLabel.Caption := Format('Grid size = %d', [gridsize - 1]);
 
 
   buffer := TBitmap.Create;
