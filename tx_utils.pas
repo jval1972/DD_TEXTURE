@@ -42,9 +42,9 @@ uses
 
 function GetIntInRange(const x: Integer; const amin, amax: Integer): Integer;
 begin
-  if Result < amin then
+  if x < amin then
     Result := amin
-  else if Result > amax then
+  else if x > amax then
     Result := amax
   else
     Result := x;
