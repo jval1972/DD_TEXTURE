@@ -110,6 +110,10 @@ type
     HRadioGroup: TRadioGroup;
     RotateLeftSpeedButton: TSpeedButton;
     RotateRightSpeedButton: TSpeedButton;
+    Panel8: TPanel;
+    RestoreHorzSpeedButton: TSpeedButton;
+    RestoreVertSpeedButton: TSpeedButton;
+    RestoreAllSpeedButton: TSpeedButton;
     procedure FormCreate(Sender: TObject);
     procedure PaintBox1Paint(Sender: TObject);
     procedure OpenGLPanelResize(Sender: TObject);
@@ -135,6 +139,9 @@ type
     procedure WRadioGroupClick(Sender: TObject);
     procedure RotateLeftSpeedButtonClick(Sender: TObject);
     procedure RotateRightSpeedButtonClick(Sender: TObject);
+    procedure RestoreHorzSpeedButtonClick(Sender: TObject);
+    procedure RestoreVertSpeedButtonClick(Sender: TObject);
+    procedure RestoreAllSpeedButtonClick(Sender: TObject);
   private
     { Private declarations }
     glneedrecalc: boolean;
@@ -690,7 +697,6 @@ begin
   Result := xA * (1 - w2) + xB * w2;
 end;
 
-
 procedure TForm1.CreateGrid;
 var
   x, y: integer;
@@ -828,6 +834,53 @@ procedure TForm1.RotateRightSpeedButtonClick(Sender: TObject);
 begin
   Screen.Cursor := crHourGlass;
   try
+    RotateBitmap90DegreesCounterClockwise(buffer);
+    CreateGLTexture;
+    ResetMarks;
+    InvalidatePaintBox;
+    glneedrecalc := True;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+end;
+
+procedure TForm1.RestoreHorzSpeedButtonClick(Sender: TObject);
+begin
+  Screen.Cursor := crHourGlass;
+  try
+    RestoreBitmapDeformation(buffer);
+    CreateGLTexture;
+    ResetMarks;
+    InvalidatePaintBox;
+    glneedrecalc := True;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+end;
+
+procedure TForm1.RestoreVertSpeedButtonClick(Sender: TObject);
+begin
+  Screen.Cursor := crHourGlass;
+  try
+    RotateBitmap90DegreesClockwise(buffer);
+    RestoreBitmapDeformation(buffer);
+    RotateBitmap90DegreesCounterClockwise(buffer);
+    CreateGLTexture;
+    ResetMarks;
+    InvalidatePaintBox;
+    glneedrecalc := True;
+  finally
+    Screen.Cursor := crDefault;
+  end;
+end;
+
+procedure TForm1.RestoreAllSpeedButtonClick(Sender: TObject);
+begin
+  Screen.Cursor := crHourGlass;
+  try
+    RestoreBitmapDeformation(buffer);
+    RotateBitmap90DegreesClockwise(buffer);
+    RestoreBitmapDeformation(buffer);
     RotateBitmap90DegreesCounterClockwise(buffer);
     CreateGLTexture;
     ResetMarks;
