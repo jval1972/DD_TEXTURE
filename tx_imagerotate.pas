@@ -59,7 +59,12 @@ function RotateJPEGFile180Degrees(const fname: string): boolean;
 
 procedure StretchBitmap(const srcBmp, dstBmp: TBitmap);
 
-procedure RestoreBitmapDeformation(const bm: TBitmap);
+const
+  RBD_LEFT = 1;
+  RBD_RIGHT = 2;
+  RBD_BOTH = RBD_LEFT or RBD_RIGHT;
+
+procedure RestoreBitmapDeformation(const bm: TBitmap; const flags: LongWord = RBD_BOTH);
 
 implementation
 
@@ -679,9 +684,9 @@ type
   TLongWordBuffer = array[0..$FFFF] of LongWord;
   PLongWordBuffer = ^TLongWordBuffer;
 
-procedure RestoreBitmapDeformation(const bm: TBitmap);
+procedure RestoreBitmapDeformation(const bm: TBitmap; const flags: LongWord = RBD_BOTH);
 const
-  BUF_SIZE_7 = 10000;
+  BUF_SIZE_7 = 32000;
 var
   A, B: array[0..BUF_SIZE_7 - 1] of Integer;
   L: array[0..BUF_SIZE_7 - 1] of LongWord;
@@ -714,19 +719,28 @@ begin
 
   for x := 0 to h - 1 do
   begin
-    for i := 0 to margin - 1 do
-      if pixelless(c_gray, C.Pixels[i, x]) and pixelless(c_gray, C.Pixels[i + 1, x]) then
-      begin
-        A[x] := i;
-        Break;
-      end;
-    for i := w - 1 downto w - margin do
-      if pixelless(c_gray, C.Pixels[i, x]) and pixelless(c_gray, C.Pixels[i - 1, x]) then
-      begin
-        B[x] := i;
-        Break;
-      end;
-
+    if flags and RBD_LEFT <> 0 then
+    begin
+      for i := 0 to margin - 1 do
+        if pixelless(c_gray, C.Pixels[i, x]) and pixelless(c_gray, C.Pixels[i + 1, x]) then
+        begin
+          A[x] := i;
+          Break;
+        end;
+    end
+    else
+      A[x] := 0;
+    if flags and RBD_RIGHT <> 0 then
+    begin
+      for i := w - 1 downto w - margin do
+        if pixelless(c_gray, C.Pixels[i, x]) and pixelless(c_gray, C.Pixels[i - 1, x]) then
+        begin
+          B[x] := i;
+          Break;
+        end;
+    end
+    else
+      B[x] := w - 1;
   end;
 
   astart := w;
