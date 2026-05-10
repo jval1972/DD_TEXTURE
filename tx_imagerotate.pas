@@ -64,7 +64,7 @@ const
   RBD_RIGHT = 2;
   RBD_BOTH = RBD_LEFT or RBD_RIGHT;
 
-procedure RestoreBitmapDeformation(const bm: TBitmap; const flags: LongWord = RBD_BOTH);
+procedure RestoreBitmapDeformation(const bm1: TBitmap; const flags: LongWord = RBD_BOTH);
 
 implementation
 
@@ -684,10 +684,12 @@ type
   TLongWordBuffer = array[0..$FFFF] of LongWord;
   PLongWordBuffer = ^TLongWordBuffer;
 
-procedure RestoreBitmapDeformation(const bm: TBitmap; const flags: LongWord = RBD_BOTH);
+procedure RestoreBitmapDeformation(const bm1: TBitmap; const flags: LongWord = RBD_BOTH);
 const
   BUF_SIZE_7 = 32000;
+  STRETCH_FACTOR = 5;
 var
+  bm: TBitmap;
   A, B: array[0..BUF_SIZE_7 - 1] of Integer;
   L: array[0..BUF_SIZE_7 - 1] of LongWord;
   c_gray: LongWord;
@@ -702,6 +704,16 @@ var
   w1, w2: double;
   dbl: double;
 begin
+  bm := TBitmap.Create;
+  if (bm1.Width < 2049) and (bm1.Height < 2049) then
+  begin
+    bm.Width := STRETCH_FACTOR * bm1.Width;
+    bm.Height := STRETCH_FACTOR * bm1.Height;
+    StretchBitmap(bm1, bm)
+  end
+  else
+    bm.Assign(bm1);
+
   for i := 0 to BUF_SIZE_7 - 1 do
   begin
     A[i] := -1;
@@ -779,6 +791,13 @@ begin
       end;
 
   end;
+
+  if (bm1.Width <> bm.Width) or (bm1.Height <> bm.Height) then
+    StretchBitmap(bm, bm1)
+  else
+    bm1.Assign(bm);
+
+  bm.Free;
 end;
 
 end.
